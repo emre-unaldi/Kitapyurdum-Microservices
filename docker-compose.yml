@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  redis-db:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - kitapyurdum-microservices-network
+
+  rabbitmq-log:
+    image: rabbitmq:3.13-management
+    hostname: rabbitmq-log
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin38
+    networks:
+      - kitapyurdum-microservices-network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=unaldi
+      - MONGO_INITDB_ROOT_PASSWORD=eu1189
+      - MONGO_INITDB_DATABASE=kitapyurdum-microservices
+    networks:
+      - kitapyurdum-microservices-network
+
+volumes:
+  redis_data:
+  rabbitmq_data:
+  rabbitmq_log:
+  mongo_data:
+
+networks:
+  kitapyurdum-microservices-network:
+    driver: bridge
